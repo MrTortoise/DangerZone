@@ -3,7 +3,7 @@ Card game about knocking other people out of the game.
 Game for 2 or more people
 
 ## Object of the game
-- Reduce the opponents Health to 0 Whilst keeping you rown above 0
+- Reduce the opponents Health to 0 Whilst keeping your own above 0
 - The winner is the last player with any health.
 
 - Players draw 3 characters.
