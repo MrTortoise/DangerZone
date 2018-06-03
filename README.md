@@ -8,6 +8,27 @@ Game for 2 or more people
 - Reduce the opponents Health to 0 Whilst keeping your own above 0
 - The winner is the last player with any health.
 
+## Game Take 2
+
+### Objective
+
+It is everyone against everyone, but wait someone is undead.
+Dun dun duh.
+Be the last one standing, or on hands and knees eating your enemies as lunch.
+
+- Players draw cards into their hand
+- Players take it in turns to play one card onto another player.
+- Cards either do damage or heal (but they do the opposite to the undead player).
+- Players have no idea what the health of other players is.
+- However a player can play a special card to reveal hp to that one player.
+- Any verbal communication is allowed (but not screen sharing).
+-
+
+### Point of interst
+
+
+## Game Take 1
+
 - Players draw 3 characters.
 - These 3 characters can each draw 3 skills
 - The characters are place in rank and file
