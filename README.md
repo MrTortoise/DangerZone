@@ -24,7 +24,7 @@ Be the last one standing, or on hands and knees eating your enemies as lunch.
 - Any verbal communication is allowed (but not screen sharing).
 -
 
-### Point of interst
+### Point of interest
 
 
 ## Game Take 1
