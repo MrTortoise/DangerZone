@@ -3,7 +3,6 @@ defmodule PlayerTest do
   alias DangerZone.{Player, Card}
   doctest Player
 
-
   test "when create undead player undead is set, health is 100 and name is right" do
     name = "dave"
     player = Player.new(name, true)

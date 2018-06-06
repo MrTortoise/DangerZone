@@ -11,7 +11,7 @@ defmodule LobbyTest do
   test "After create game lobby will have game in it" do
     game_name = "dave"
     {:ok, lobby} = Lobby.new()
-    game = Game.new(game_name)
+    game = Game.new(game_name, [])
     {:ok, lobby} = Lobby.add_game(lobby, game)
     assert MapSet.size(lobby.games) == 1
     assert game.name == game_name

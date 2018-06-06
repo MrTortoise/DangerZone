@@ -5,6 +5,7 @@ defmodule DangerZone.Player do
   defstruct [:name, :health, :is_undead, :cards]
 
   def new(name), do: new(name, false)
+
   def new(name, is_undead) do
     %Player{
       name: name,
