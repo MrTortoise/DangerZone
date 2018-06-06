@@ -33,9 +33,17 @@ defmodule DangerZone.Game do
       player = game.players[game.to_act] |> Player.add_card(card)
       players = Map.put(game.players, game.to_act, player)
 
-      {:ok, %Game{game | deck: new_deck, players: players}}
+      {:ok, %Game{game | deck: new_deck, players: players, to_act: increment_to_act(game)}}
     else
       err -> err
+    end
+  end
+
+  defp increment_to_act(%Game{} = game) do
+    num = Enum.count(game.players)
+    cond do
+      num - 1 == game.to_act -> 0
+      true -> game.to_act + 1
     end
   end
 
