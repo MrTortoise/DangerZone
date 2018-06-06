@@ -37,5 +37,12 @@ defmodule GameTest do
     {:ok, new_game} = Game.deal_card(game)
     assert Enum.count(new_game.deck) == 1
     assert new_game.to_act == 1
+
+    {:ok, new_game} = Game.deal_card(new_game)
+    assert Enum.count(new_game.deck) == 0
+    assert new_game.to_act == 0
+
+    assert Enum.count(new_game.players[0].cards) == 1
+    assert Enum.count(new_game.players[1].cards) == 1
   end
 end

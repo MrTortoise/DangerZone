@@ -16,7 +16,7 @@ defmodule DangerZone.Player do
   end
 
   def add_card(player, card) do
-    cards = player.cards ++ [card]
+    cards = [card | player.cards]
     Map.put(player, :cards, cards)
   end
 end

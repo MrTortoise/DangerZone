@@ -41,6 +41,7 @@ defmodule DangerZone.Game do
 
   defp increment_to_act(%Game{} = game) do
     num = Enum.count(game.players)
+
     cond do
       num - 1 == game.to_act -> 0
       true -> game.to_act + 1
@@ -54,13 +55,4 @@ defmodule DangerZone.Game do
       true -> {:ok, game}
     end
   end
-
-  # def play_card(game_state, player_source, card, player_target) do
-  #   with {:ok, player_source} <- Player.remove_card(player_source, card),
-  #        {:ok, player_target} <- apply_card(player_target, card) do
-  #       {:ok, player_source, player_target}
-  #        else
-  #         err -> err
-  #     end
-  # end
 end

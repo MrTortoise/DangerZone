@@ -28,6 +28,6 @@ defmodule PlayerTest do
     assert [card1] == pwc.cards
 
     pwc2 = Player.add_card(pwc, card2)
-    assert [card1, card2] == pwc2.cards
+    assert [card2, card1] == pwc2.cards
   end
 end
