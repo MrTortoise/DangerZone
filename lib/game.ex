@@ -26,6 +26,17 @@ defmodule DangerZone.Game do
     end
   end
 
+  def deal_cards(%Game{} = game, number) do
+    total_cards = number * Enum.count(game.players)
+    deal_cards_loop(game, total_cards)
+  end
+
+  defp deal_cards_loop(%Game{} = game, 0), do: game
+  defp deal_cards_loop(%Game{} = game, remaining) do
+    {:ok, game} = deal_card(game)
+    deal_cards_loop(game, remaining-1)
+  end
+
   def deal_card(%Game{} = game) do
     with {:ok, game} <- game_can_deal(game) do
       card =

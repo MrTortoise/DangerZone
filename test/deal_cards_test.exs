@@ -29,6 +29,14 @@ defmodule DealCardsTest do
     game = Game.shuffle_deck(game)
 
     assert Enum.count(game.deck) == 20
+
+    {:ok, game} = Game.add_player(game, Player.new("dave"))
+    {:ok, game} = Game.add_player(game, Player.new("dave2"))
+
+    game = Game.deal_cards(game, 5)
+    assert Enum.count(game.deck) == 10
+    assert Enum.count(game.players[0].cards) == 5
+    assert Enum.count(game.players[1].cards) == 5
   end
 
 end
