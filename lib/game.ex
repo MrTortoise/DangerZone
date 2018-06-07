@@ -1,5 +1,5 @@
 defmodule DangerZone.Game do
-  alias DangerZone.{Game, Player, Card}
+  alias DangerZone.{Game, Player}
 
   @enforce_keys [:name, :players, :deck, :to_act]
   defstruct [:name, :players, :deck, :to_act]
@@ -28,9 +28,18 @@ defmodule DangerZone.Game do
 
   def deal_card(%Game{} = game) do
     with {:ok, game} <- game_can_deal(game) do
-      card = game.deck |> Enum.random()
-      new_deck = game.deck |> List.delete(card)
-      player = game.players[game.to_act] |> Player.add_card(card)
+      card =
+        game.deck
+        |> Enum.random()
+
+      new_deck =
+        game.deck
+        |> List.delete(card)
+
+      player =
+        game.players[game.to_act]
+        |> Player.add_card(card)
+
       players = Map.put(game.players, game.to_act, player)
 
       {:ok, %Game{game | deck: new_deck, players: players, to_act: increment_to_act(game)}}
@@ -54,5 +63,9 @@ defmodule DangerZone.Game do
       Enum.count(game.players) == 0 -> {:error, :no_players}
       true -> {:ok, game}
     end
+  end
+
+  def shuffle_deck(%Game{} = game) do
+    %Game{game | deck: game.deck |> Enum.shuffle}
   end
 end

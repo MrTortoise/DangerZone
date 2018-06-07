@@ -27,22 +27,5 @@ defmodule GameTest do
     assert {:error, :player_name_exists} = Game.add_player(game, player)
   end
 
-  test "when deal card player gets it, deck loses it, next to act is incremented" do
-    card1 = Card.new("c1", 10)
-    card2 = Card.new("c2", 20)
-    game = Game.new("steve", [card1, card2])
-    {:ok, game} = Game.add_player(game, Player.new("dave"))
-    {:ok, game} = Game.add_player(game, Player.new("dave2"))
 
-    {:ok, new_game} = Game.deal_card(game)
-    assert Enum.count(new_game.deck) == 1
-    assert new_game.to_act == 1
-
-    {:ok, new_game} = Game.deal_card(new_game)
-    assert Enum.count(new_game.deck) == 0
-    assert new_game.to_act == 0
-
-    assert Enum.count(new_game.players[0].cards) == 1
-    assert Enum.count(new_game.players[1].cards) == 1
-  end
 end
