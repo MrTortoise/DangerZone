@@ -1,11 +1,28 @@
 defmodule DangerZone.Game do
-  alias DangerZone.{Game, Player}
+  alias DangerZone.{Game, Player, Card}
 
-  @enforce_keys [:name, :players, :deck, :to_act]
-  defstruct [:name, :players, :deck, :to_act]
+  @enforce_keys [:name, :players, :deck, :to_act, :spent]
+  defstruct [:name, :players, :deck, :to_act, :spent]
 
-  def new(name, deck), do: new(name, deck, %{})
-  def new(name, deck, players), do: %Game{name: name, players: players, deck: deck, to_act: 0}
+  def new(name), do: new(name, %{})
+  def new(name, players), do: %Game{
+    name: name,
+    players: players,
+    deck: [],
+    to_act: 0,
+    spent: []}
+
+  def get_player(%Game{} = game, player_id) do
+    Map.fetch(game.players, player_id)
+  end
+
+  def get_card(%Game{} = game, card_id) do
+    result = Enum.find(game.deck, :not_found, fn (x) -> x.id == card_id end)
+    case result do
+      :not_found -> {:error, :not_found}
+      card -> {:ok, card}
+    end
+  end
 
   def add_player(%Game{} = game, %Player{} = player) do
     num = Enum.count(game.players)
@@ -23,6 +40,33 @@ defmodule DangerZone.Game do
           false ->
             {:ok, %{game | players: Map.put(game.players, Enum.count(game.players), player)}}
         end
+    end
+  end
+
+  def add_cards_to_deck(%Game{} = game, _, 0), do: game
+
+  def add_cards_to_deck(%Game{} = game, %Card{} = card, number) do
+    id = Enum.count(game.deck)
+    card = %Card{card | id: id}
+    game = %Game{game | deck: [card | game.deck]}
+    add_cards_to_deck(game, card, number - 1)
+  end
+
+
+  def play_card(%Game{} = game, source_player_id, card_id, target_player_id) do
+    with {:ok, source_player} <- get_player(game, source_player_id),
+         {:ok, card} <- Player.get_card(source_player, card_id),
+         {:ok, target_player} <- get_player(game, target_player_id) do
+
+      {:ok, source_no_card} = Player.remove_card(source_player, card_id)
+      {card, target_player, source_no_card} = Card.apply(card, target_player, source_no_card)
+      players = game.players
+        |> Map.put(source_no_card.id, source_no_card)
+        |> Map.put(target_player.id, target_player)
+
+      %Game{game | players: players, spent: [card | game.spent]}
+    else
+      err -> err
     end
   end
 

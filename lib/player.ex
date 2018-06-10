@@ -11,12 +11,26 @@ defmodule DangerZone.Player do
       name: name,
       health: 100,
       is_undead: is_undead,
-      cards: []
+      cards: %{}
     }
   end
 
   def add_card(player, card) do
-    cards = [card | player.cards]
-    Map.put(player, :cards, cards)
+    cards = Map.put(player.cards, card.id, card)
+    %Player{player | cards: cards}
+  end
+
+  def remove_card(player, card_id) do
+    case Map.has_key?(player.cards, card_id) do
+      true -> {:ok, Map.delete(player.cards, card_id)}
+      _ -> {:error, :card_not_found}
+    end
+  end
+
+  def get_card(player, card_id) do
+    case Map.has_key?(player.cards, card_id) do
+      true -> {:ok, player.cards[card_id]}
+      false -> {:error, :card_not_found}
+    end
   end
 end

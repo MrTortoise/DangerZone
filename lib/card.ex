@@ -1,16 +1,19 @@
 defmodule DangerZone.Card do
-  alias __MODULE__
+  alias DangerZone.{Card, Player}
 
-  @enforce_keys [:name, :damage]
-  defstruct [:name, :damage]
+  @enforce_keys [:name, :damage, :id]
+  defstruct [:name, :damage, :id]
 
-  def new(name, damage), do: %Card{name: name, damage: damage}
+  def new(name, damage), do: %Card{id: -1,name: name, damage: damage}
 
-  def heal(), do: new("Heal", -100)
-  def hurt(), do: new("Hurt", 100)
+  def heal(), do: new("Heal", -50)
+  def hurt(), do: new("Hurt", 50)
 
-  def add_cards_to_deck(deck, _, 0), do: deck
-
-  def add_cards_to_deck(deck, %Card{} = card, number),
-    do: add_cards_to_deck([card | deck], card, number - 1)
+  def apply(%Card{} = card, %Player{} =  target, %Player{} =  source) do
+    {
+      card,
+      %Player{target | health: target.health + card.damage},
+      source
+    }
+  end
 end
