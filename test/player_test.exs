@@ -21,13 +21,14 @@ defmodule PlayerTest do
 
   test "when add a card to player cards has 1 in it" do
     player = Player.new("dave")
-    card1 = Card.new("card1", 10)
-    card2 = Card.new("card2", 13)
-    assert [] = player.cards
+    card1 = Card.new("card1", 10) |> Map.put(:id, 0)
+    card2 = Card.new("card2", 13) |> Map.put(:id, 1)
+    assert %{} = player.cards
     pwc = Player.add_card(player, card1)
-    assert [card1] == pwc.cards
+    assert card1 == pwc.cards[card1.id]
 
     pwc2 = Player.add_card(pwc, card2)
-    assert [card2, card1] == pwc2.cards
+    assert Enum.count(pwc2.cards) == 2
+    assert card2 == pwc2.cards[card2.id]
   end
 end

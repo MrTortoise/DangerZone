@@ -5,9 +5,12 @@ defmodule DealCardsTest do
   test "when deal card player gets it, deck loses it, next to act is incremented" do
     card1 = Card.new("c1", 10)
     card2 = Card.new("c2", 20)
-    game = Game.new("steve", [card1, card2])
+    game = Game.new("steve")
     {:ok, game} = Game.add_player(game, Player.new("dave"))
     {:ok, game} = Game.add_player(game, Player.new("dave2"))
+
+    game = Game.add_cards_to_deck(game, card1, 1)
+    game = Game.add_cards_to_deck(game, card2, 1)
 
     {:ok, new_game} = Game.deal_card(game)
     assert Enum.count(new_game.deck) == 1
@@ -22,11 +25,11 @@ defmodule DealCardsTest do
   end
 
   test "setup a deck of 20 cards, deal 5 to each player" do
-    deck = Card.add_cards_to_deck([],Card.heal(), 10)
-    deck = Card.add_cards_to_deck(deck,Card.hurt(), 10)
-
-    game = Game.new("test",deck)
-    game = Game.shuffle_deck(game)
+    game =
+      Game.new("test")
+      |> Game.add_cards_to_deck(Card.heal(), 10)
+      |> Game.add_cards_to_deck(Card.hurt(), 10)
+      |> Game.shuffle_deck()
 
     assert Enum.count(game.deck) == 20
 
@@ -38,5 +41,4 @@ defmodule DealCardsTest do
     assert Enum.count(game.players[0].cards) == 5
     assert Enum.count(game.players[1].cards) == 5
   end
-
 end

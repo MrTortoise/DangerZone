@@ -4,12 +4,9 @@ defmodule GameTest do
   doctest Game
 
   test "create game will have name" do
-    with %Card{} = card <- Card.new("c1", 100) do
-      game = Game.new("dave", [card])
-      assert game.name == "dave"
-      assert Map.size(game.players) == 0
-      assert game.deck == [card]
-    end
+    game = Game.new("dave")
+    assert game.name == "dave"
+    assert Map.size(game.players) == 0
   end
 
   test "when add players to a game has player" do
@@ -26,6 +23,4 @@ defmodule GameTest do
     {:ok, game} = Game.add_player(game, player)
     assert {:error, :player_name_exists} = Game.add_player(game, player)
   end
-
-
 end

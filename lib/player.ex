@@ -2,7 +2,7 @@ defmodule DangerZone.Player do
   alias __MODULE__
 
   @enforce_keys [:name, :health, :is_undead, :cards]
-  defstruct [:name, :health, :is_undead, :cards]
+  defstruct [:name, :health, :is_undead, :cards, :id]
 
   def new(name), do: new(name, false)
 
@@ -22,7 +22,7 @@ defmodule DangerZone.Player do
 
   def remove_card(player, card_id) do
     case Map.has_key?(player.cards, card_id) do
-      true -> {:ok, Map.delete(player.cards, card_id)}
+      true -> {:ok, %Player{player | cards:  Map.delete(player.cards, card_id)}}
       _ -> {:error, :card_not_found}
     end
   end

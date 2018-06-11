@@ -5,19 +5,15 @@ defmodule DangerZone.Game do
   defstruct [:name, :players, :deck, :to_act, :spent]
 
   def new(name), do: new(name, %{})
-  def new(name, players), do: %Game{
-    name: name,
-    players: players,
-    deck: [],
-    to_act: 0,
-    spent: []}
+  def new(name, players), do: %Game{name: name, players: players, deck: [], to_act: 0, spent: []}
 
   def get_player(%Game{} = game, player_id) do
     Map.fetch(game.players, player_id)
   end
 
   def get_card(%Game{} = game, card_id) do
-    result = Enum.find(game.deck, :not_found, fn (x) -> x.id == card_id end)
+    result = Enum.find(game.deck, :not_found, fn x -> x.id == card_id end)
+
     case result do
       :not_found -> {:error, :not_found}
       card -> {:ok, card}
@@ -26,10 +22,10 @@ defmodule DangerZone.Game do
 
   def add_player(%Game{} = game, %Player{} = player) do
     num = Enum.count(game.players)
-
+    player_with_id = %Player{player | id: num}
     cond do
       num == 0 ->
-        {:ok, %{game | players: Map.put(%{}, 0, player)}}
+        {:ok, %{game | players: Map.put(%{}, 0, player_with_id)}}
 
       true ->
         case Map.values(game.players)
@@ -38,7 +34,7 @@ defmodule DangerZone.Game do
             {:error, :player_name_exists}
 
           false ->
-            {:ok, %{game | players: Map.put(game.players, Enum.count(game.players), player)}}
+            {:ok, %{game | players: Map.put(game.players, num, player_with_id)}}
         end
     end
   end
@@ -52,7 +48,6 @@ defmodule DangerZone.Game do
     add_cards_to_deck(game, card, number - 1)
   end
 
-
   def play_card(%Game{} = game, source_player_id, card_id, target_player_id) do
     with {:ok, source_player} <- get_player(game, source_player_id),
          {:ok, card} <- Player.get_card(source_player, card_id),
@@ -60,11 +55,13 @@ defmodule DangerZone.Game do
 
       {:ok, source_no_card} = Player.remove_card(source_player, card_id)
       {card, target_player, source_no_card} = Card.apply(card, target_player, source_no_card)
-      players = game.players
+
+      players =
+        game.players
         |> Map.put(source_no_card.id, source_no_card)
         |> Map.put(target_player.id, target_player)
 
-      %Game{game | players: players, spent: [card | game.spent]}
+      {:ok, %Game{game | players: players, spent: [card | game.spent]}}
     else
       err -> err
     end
@@ -76,9 +73,10 @@ defmodule DangerZone.Game do
   end
 
   defp deal_cards_loop(%Game{} = game, 0), do: game
+
   defp deal_cards_loop(%Game{} = game, remaining) do
     {:ok, game} = deal_card(game)
-    deal_cards_loop(game, remaining-1)
+    deal_cards_loop(game, remaining - 1)
   end
 
   def deal_card(%Game{} = game) do
@@ -121,6 +119,6 @@ defmodule DangerZone.Game do
   end
 
   def shuffle_deck(%Game{} = game) do
-    %Game{game | deck: game.deck |> Enum.shuffle}
+    %Game{game | deck: game.deck |> Enum.shuffle()}
   end
 end
