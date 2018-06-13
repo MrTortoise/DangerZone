@@ -1,6 +1,6 @@
 defmodule GameTest do
   use ExUnit.Case
-  alias DangerZone.{Game, Player, Card}
+  alias DangerZone.{Game, Player}
   doctest Game
 
   test "create game will have name" do

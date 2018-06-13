@@ -8,7 +8,7 @@ defmodule PlayDamageCardTest do
     source = Player.new("dave")
     target = Player.new("dave2")
 
-    game = Game.add_cards_to_deck(game, Card.hurt(), 1)
+    game = Game.add_cards_to_deck(game, Card.harm(), 1)
 
     {:ok, game} = Game.add_player(game, source)
     {:ok, game} = Game.add_player(game, target)

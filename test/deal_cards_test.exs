@@ -3,8 +3,8 @@ defmodule DealCardsTest do
   alias DangerZone.{Game, Player, Card}
 
   test "when deal card player gets it, deck loses it, next to act is incremented" do
-    card1 = Card.new("c1", 10)
-    card2 = Card.new("c2", 20)
+    card1 = Card.new("c1", 10, :heal)
+    card2 = Card.new("c2", 20, :harm)
     game = Game.new("steve")
     {:ok, game} = Game.add_player(game, Player.new("dave"))
     {:ok, game} = Game.add_player(game, Player.new("dave2"))
@@ -28,7 +28,7 @@ defmodule DealCardsTest do
     game =
       Game.new("test")
       |> Game.add_cards_to_deck(Card.heal(), 10)
-      |> Game.add_cards_to_deck(Card.hurt(), 10)
+      |> Game.add_cards_to_deck(Card.harm(), 10)
       |> Game.shuffle_deck()
 
     assert Enum.count(game.deck) == 20

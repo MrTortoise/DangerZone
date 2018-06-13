@@ -21,8 +21,8 @@ defmodule PlayerTest do
 
   test "when add a card to player cards has 1 in it" do
     player = Player.new("dave")
-    card1 = Card.new("card1", 10) |> Map.put(:id, 0)
-    card2 = Card.new("card2", 13) |> Map.put(:id, 1)
+    card1 = Card.new("card1", 10, :heal) |> Map.put(:id, 0)
+    card2 = Card.new("card2", 13, :harm) |> Map.put(:id, 1)
     assert %{} = player.cards
     pwc = Player.add_card(player, card1)
     assert card1 == pwc.cards[card1.id]
