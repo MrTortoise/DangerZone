@@ -20,6 +20,14 @@ defmodule DangerZone.Game do
     end
   end
 
+  def add_player!(%Game{} = game, %Player{} = player) do
+    with {:ok, game} <- add_player(game, player) do
+      game
+    else
+      err -> err
+    end
+  end
+
   def add_player(%Game{} = game, %Player{} = player) do
     num = Enum.count(game.players)
     player_with_id = %Player{player | id: num}
