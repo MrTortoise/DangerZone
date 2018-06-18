@@ -3,7 +3,6 @@ defmodule PlayHealthCardTest do
   alias DangerZone.{Game, Player, Card}
 
   test "playing a health card on a non undead player will heal them" do
-
     game = Game.new("steve", [])
     source = Player.new("dave")
     target = Player.new("dave2")
@@ -20,12 +19,14 @@ defmodule PlayHealthCardTest do
     {:ok, game} = Game.deal_card(game)
     card = game.players[0].cards[0]
 
-    {:ok, game} = Game.play_card(game, 0, card.id, 1)
+    {:ok, game, result} = Game.play_card(game, 0, card.id, 1)
 
     source_after = game.players[0]
     assert Enum.count(source_after.cards) == 0
 
     target_after = game.players[1]
     assert target_after.health == 150
+
+    assert {:heal, 50} = result
   end
 end

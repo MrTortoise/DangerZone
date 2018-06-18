@@ -31,6 +31,7 @@ defmodule DangerZone.Game do
   def add_player(%Game{} = game, %Player{} = player) do
     num = Enum.count(game.players)
     player_with_id = %Player{player | id: num}
+
     cond do
       num == 0 ->
         {:ok, %{game | players: Map.put(%{}, 0, player_with_id)}}
@@ -59,20 +60,43 @@ defmodule DangerZone.Game do
   def play_card(%Game{} = game, source_player_id, card_id, target_player_id) do
     with {:ok, source_player} <- get_player(game, source_player_id),
          {:ok, card} <- Player.get_card(source_player, card_id),
-         {:ok, target_player} <- get_player(game, target_player_id) do
+         {:ok, target_player} <- get_player(game, target_player_id),
+         {:ok, source_no_card} <- Player.remove_card(source_player, card_id) do
 
-      {:ok, source_no_card} = Player.remove_card(source_player, card_id)
-      {card, target_player, source_no_card} = Card.apply(card, target_player, source_no_card)
-
-      players =
-        game.players
-        |> Map.put(source_no_card.id, source_no_card)
-        |> Map.put(target_player.id, target_player)
-
-      {:ok, %Game{game | players: players, spent: [card | game.spent]}}
+      p_play_card(game, card, source_no_card, target_player)
     else
       err -> err
     end
+  end
+
+  defp p_play_card(
+    %Game{} = game,
+    %Card{type: :query} = card,
+    %Player{} = source,
+    %Player{} = target) do
+
+    game = update_game_players_spent_cards(game, source, target, card)
+    {:ok, game, {:query, target.health }}
+  end
+
+  defp p_play_card(
+    %Game{} = game,
+    %Card{} = card,
+    %Player{} = source,
+    %Player{} = target
+  ) do
+    %{source: source, target: target, result: result} = Card.apply(card, target, source)
+    game = update_game_players_spent_cards(game, source, target, card)
+    {:ok, game, result}
+  end
+
+  defp update_game_players_spent_cards(game, source_player, target_player, card) do
+    players =
+    game.players
+    |> Map.put(source_player.id, source_player)
+    |> Map.put(target_player.id, target_player)
+
+    %Game{game | players: players, spent: [card | game.spent]}
   end
 
   def deal_cards(%Game{} = game, number) do
@@ -109,7 +133,8 @@ defmodule DangerZone.Game do
     end
   end
 
-  defp increment_to_act(%Game{} = game) do
+
+  def increment_to_act(%Game{} = game) do
     num = Enum.count(game.players)
 
     cond do
@@ -118,7 +143,7 @@ defmodule DangerZone.Game do
     end
   end
 
-  def game_can_deal(%Game{} = game) do
+  defp game_can_deal(%Game{} = game) do
     cond do
       game.deck == [] -> {:error, :empty_deck}
       Enum.count(game.players) == 0 -> {:error, :no_players}
