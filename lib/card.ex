@@ -14,7 +14,7 @@ defmodule DangerZone.Card do
     %{
       target: %Player{target | health: target.health + card.value},
       source: source,
-      result: {:heal, card.value }
+      result: {:heal, card.value}
     }
   end
 
@@ -22,7 +22,7 @@ defmodule DangerZone.Card do
     %{
       target: %Player{target | health: target.health - card.value},
       source: source,
-      result: {:harm, card.value }
+      result: {:harm, card.value}
     }
   end
 end

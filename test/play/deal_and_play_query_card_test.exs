@@ -10,12 +10,11 @@ defmodule QueryCardTest do
       |> Game.add_cards_to_deck(Card.heal(), 3)
       |> Game.add_cards_to_deck(Card.query(), 1)
 
+    {:ok, game} = Game.deal_card(game)
+    {:ok, game} = Game.deal_card(game)
 
-      {:ok, game} = Game.deal_card(game)
-      {:ok, game} = Game.deal_card(game)
+    {:ok, _, result} = Game.play_card(game, 0, 3, 1)
 
-      {:ok, _, result} = Game.play_card(game, 0, 3, 1)
-
-      assert {:query, 100} = result
+    assert {:query, 100} = result
   end
 end
