@@ -113,9 +113,7 @@ defmodule DangerZone.Game do
 
   def deal_card(%Game{} = game) do
     with {:ok, game} <- game_can_deal(game) do
-      card =
-        game.deck
-        |> Enum.random()
+      [card | _] = game.deck
 
       new_deck =
         game.deck
