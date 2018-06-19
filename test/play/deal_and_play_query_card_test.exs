@@ -14,9 +14,7 @@ defmodule QueryCardTest do
       {:ok, game} = Game.deal_card(game)
       {:ok, game} = Game.deal_card(game)
 
-      IO.inspect game
-
-      {:ok, game, result} = Game.play_card(game, 0, 3, 1)
+      {:ok, _, result} = Game.play_card(game, 0, 3, 1)
 
       assert {:query, 100} = result
   end
