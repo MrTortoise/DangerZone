@@ -20,5 +20,4 @@ defmodule PlayingCardsRulesTests do
     assert current_index == 0
   end
 
-
 end
