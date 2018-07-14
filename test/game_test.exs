@@ -1,6 +1,6 @@
 defmodule GameTest do
   use ExUnit.Case
-  alias DangerZone.{Game, Player}
+  alias DangerZone.{Game, Player, Rules}
   doctest Game
 
   test "create game will have name" do
@@ -22,5 +22,12 @@ defmodule GameTest do
     player = Player.new("jim")
     {:ok, game} = Game.add_player(game, player)
     assert {:error, :player_name_exists} = Game.add_player(game, player)
+  end
+
+  test "can update rules" do
+    game = Game.new("steve")
+    rules = %Rules{state: :dave};
+    game = Game.update_rules(game, rules)
+    assert game.rules.state == :dave
   end
 end

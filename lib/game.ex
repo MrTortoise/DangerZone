@@ -1,11 +1,11 @@
 defmodule DangerZone.Game do
-  alias DangerZone.{Game, Player, Card}
+  alias DangerZone.{Game, Player, Card, Rules}
 
-  @enforce_keys [:name, :players, :deck, :to_act, :spent]
-  defstruct [:name, :players, :deck, :to_act, :spent]
+  @enforce_keys [:name, :players, :deck, :to_act, :spent, :rules]
+  defstruct [:name, :players, :deck, :to_act, :spent, :rules]
 
   def new(name), do: new(name, %{})
-  def new(name, players), do: %Game{name: name, players: players, deck: [], to_act: 0, spent: []}
+  def new(name, players), do: %Game{name: name, players: players, deck: [], to_act: 0, spent: [], rules: Rules.new()}
 
   def get_player(%Game{} = game, player_id) do
     Map.fetch(game.players, player_id)
@@ -18,6 +18,10 @@ defmodule DangerZone.Game do
       :not_found -> {:error, :not_found}
       card -> {:ok, card}
     end
+  end
+
+  def update_rules(%Game{} = game, %Rules{} = rules) do
+    %{game | rules: rules}
   end
 
   def add_player!(%Game{} = game, %Player{} = player) do
