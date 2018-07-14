@@ -1,7 +1,7 @@
 defmodule DangerZone.GameInstance do
   use GenServer
 
-  alias DangerZone.{Game, Rules, Card}
+  alias DangerZone.{Game, Rules, Card, Player}
 
   def start_link(name) do
     GenServer.start_link(__MODULE__, name, [])
@@ -20,8 +20,9 @@ defmodule DangerZone.GameInstance do
   end
 
 
-  def handle_call({:add_player, player}, _from, game) do
-    with {:ok, rules} <- Rules.check(game.rules, :add_player)
+  def handle_call({:add_player, player_name}, _from, game) do
+    with player <- Player.new(player_name),
+    {:ok, rules} <- Rules.check(game.rules, :add_player)
       do
         game
         |> Game.add_player!(player)
@@ -31,10 +32,9 @@ defmodule DangerZone.GameInstance do
         |> Game.add_cards_to_deck(Card.query(), 1)
         |> reply_success(:ok)
       else
-        :error -> {:reply, :error, game}
+        err -> {:reply, err, game}
       end
   end
-
 
   def handle_call({:deal}, _from, game) do
     with {:ok, rules} <- Rules.check(game.rules,

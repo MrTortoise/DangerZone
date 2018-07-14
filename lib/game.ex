@@ -25,8 +25,8 @@ defmodule DangerZone.Game do
   end
 
   def add_player!(%Game{} = game, %Player{} = player) do
-    with {:ok, game} <- add_player(game, player) do
-      game
+    with {:ok, game, id} <- add_player(game, player) do
+      {game, id}
     else
       err -> err
     end
@@ -38,7 +38,7 @@ defmodule DangerZone.Game do
 
     cond do
       num == 0 ->
-        {:ok, %{game | players: Map.put(%{}, 0, player_with_id)}}
+        {:ok, %{game | players: Map.put(%{}, num, player_with_id)}, num}
 
       true ->
         case Map.values(game.players)
@@ -47,7 +47,7 @@ defmodule DangerZone.Game do
             {:error, :player_name_exists}
 
           false ->
-            {:ok, %{game | players: Map.put(game.players, num, player_with_id)}}
+            {:ok, %{game | players: Map.put(game.players, num, player_with_id)}, num}
         end
     end
   end

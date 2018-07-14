@@ -9,22 +9,22 @@ defmodule PlayHealthCardTest do
 
     game = Game.add_cards_to_deck(game, Card.heal(), 1)
 
-    {:ok, game} = Game.add_player(game, source)
-    {:ok, game} = Game.add_player(game, target)
+    {:ok, game, player0} = Game.add_player(game, source)
+    {:ok, game, player1} = Game.add_player(game, target)
 
     target_before = game.players[1]
     assert target_before.name == "dave2"
     assert target_before.health == 100
 
     {:ok, game} = Game.deal_card(game)
-    card = game.players[0].cards[0]
+    card = game.players[player0].cards[0]
 
-    {:ok, game, result} = Game.play_card(game, 0, card.id, 1)
+    {:ok, game, result} = Game.play_card(game, player0, card.id, player1)
 
-    source_after = game.players[0]
+    source_after = game.players[player0]
     assert Enum.count(source_after.cards) == 0
 
-    target_after = game.players[1]
+    target_after = game.players[player1]
     assert target_after.health == 150
 
     assert {:heal, 50} = result

@@ -3,11 +3,10 @@ defmodule QueryCardTest do
   alias DangerZone.{Game, Player, Card}
 
   test "deal query to one player, get health of another" do
-    game =
-      Game.new("testGame")
-      |> Game.add_player!(Player.new("dave"))
-      |> Game.add_player!(Player.new("steve"))
-      |> Game.add_cards_to_deck(Card.heal(), 3)
+    game = Game.new("testGame")
+    {game, _} = Game.add_player!(game, Player.new("dave"))
+    {game, _} = Game.add_player!(game, Player.new("steve"))
+    game = Game.add_cards_to_deck(game, Card.heal(), 3)
       |> Game.add_cards_to_deck(Card.query(), 1)
 
     {:ok, game} = Game.deal_card(game)
