@@ -20,4 +20,8 @@ defmodule PlayingCardsRulesTests do
     assert current_index == 0
   end
 
+  test "error if player plays out of turn" do
+    state = %Rules{state: {:player_turn, 0}}
+    assert Rules.check(state, Rules.play_card_action(1,2)) == :error
+  end
 end
