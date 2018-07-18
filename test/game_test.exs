@@ -26,7 +26,7 @@ defmodule GameTest do
 
   test "can update rules" do
     game = Game.new("steve")
-    rules = %Rules{state: :dave};
+    rules = %Rules{state: :dave}
     game = Game.update_rules(game, rules)
     assert game.rules.state == :dave
   end

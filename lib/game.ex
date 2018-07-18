@@ -5,7 +5,9 @@ defmodule DangerZone.Game do
   defstruct [:name, :players, :deck, :to_act, :spent, :rules]
 
   def new(name), do: new(name, %{})
-  def new(name, players), do: %Game{name: name, players: players, deck: [], to_act: 0, spent: [], rules: Rules.new()}
+
+  def new(name, players),
+    do: %Game{name: name, players: players, deck: [], to_act: 0, spent: [], rules: Rules.new()}
 
   def get_player(%Game{} = game, player_id) do
     Map.fetch(game.players, player_id)
@@ -88,7 +90,7 @@ defmodule DangerZone.Game do
          %Player{} = source,
          %Player{} = target
        ) do
-    %{source: source, target: target, result: result} = Card.apply(card, target, source)
+    %{source: source, target: target, result: result} = Player.apply_card(target, card, source)
     game = update_game_players_spent_cards(game, source, target, card)
     {:ok, game, result}
   end
@@ -153,5 +155,8 @@ defmodule DangerZone.Game do
 
   def shuffle_deck(%Game{} = game) do
     %Game{game | deck: game.deck |> Enum.shuffle()}
+  end
+
+  def win_check(%Game{} = game) do
   end
 end

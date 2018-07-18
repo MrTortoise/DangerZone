@@ -29,4 +29,17 @@ defmodule PlayDamageCardTest do
 
     assert {:harm, 50} = result
   end
+
+  test "when a player health drops below 0 then player is dead" do
+    source = Player.new("dave")
+    target = Player.new("dave2")
+    card = Card.harm()
+
+    %{target: target} = Player.apply_card(target, card, source)
+    %{target: target} = Player.apply_card(target, card, source)
+    %{target: target} = Player.apply_card(target, card, source)
+
+    assert target.health < 0
+    assert target.dead == true
+  end
 end
