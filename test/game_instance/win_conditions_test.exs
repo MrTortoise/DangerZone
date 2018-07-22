@@ -34,7 +34,6 @@ defmodule WinConditionsTest do
 
     assert Enum.count(player1_harm_cards) >= 1
 
-
     player0_query =
       Map.values(player0cards)
       |> Enum.filter(fn x -> x.name == "Query" end)

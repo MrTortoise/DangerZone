@@ -45,6 +45,7 @@ defmodule DangerZone.Player do
 
   def apply_card(%Player{} = target, %Card{type: :harm} = card, %Player{} = source) do
     new_health = target.health - card.value
+
     %{
       target: apply_health_to_player(target, new_health),
       source: source,
@@ -52,12 +53,16 @@ defmodule DangerZone.Player do
     }
   end
 
-  defp apply_health_to_player(%Player{is_undead: false} = target, new_health) when new_health <= 0 do
+  defp apply_health_to_player(%Player{is_undead: false} = target, new_health)
+       when new_health <= 0 do
     %Player{target | health: new_health, dead: true}
   end
-  defp apply_health_to_player(%Player{is_undead: true} = target, new_health) when new_health >= 0 do
+
+  defp apply_health_to_player(%Player{is_undead: true} = target, new_health)
+       when new_health >= 0 do
     %Player{target | health: new_health, dead: true}
   end
+
   defp apply_health_to_player(%Player{} = target, new_health) do
     %Player{target | health: new_health}
   end

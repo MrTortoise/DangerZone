@@ -8,7 +8,8 @@ defmodule DangerZone.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      {Registry, keys: :unique, name: Registry.DangerZone}
+      {Registry, keys: :unique, name: Registry.DangerZone},
+      DangerZone.GameSupervisor
       # Starts a worker by calling: DangerZone.Worker.start_link(arg)
       # {DangerZone.Worker, arg},
     ]
