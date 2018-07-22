@@ -1,5 +1,5 @@
 defmodule DangerZone.Card do
-  alias DangerZone.{Card, Player}
+  alias DangerZone.{Card}
 
   @enforce_keys [:name, :value, :id, :type]
   defstruct [:name, :value, :id, :type]

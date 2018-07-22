@@ -51,5 +51,6 @@ defmodule WinConditionsTest do
     res = GameInstance.play_card(game, player0, Enum.at(player0_query, 0), player1)
 
     assert res == {:winner, player0}
+    assert true == true
   end
 end

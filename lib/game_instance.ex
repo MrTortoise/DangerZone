@@ -1,5 +1,5 @@
 defmodule DangerZone.GameInstance do
-  use GenServer
+  use GenServer, start: {__MODULE__, :start_link, []}, restart: :transient
 
   alias DangerZone.{Game, Rules, Card, Player}
 

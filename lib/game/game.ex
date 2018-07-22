@@ -156,7 +156,4 @@ defmodule DangerZone.Game do
   def shuffle_deck(%Game{} = game) do
     %Game{game | deck: game.deck |> Enum.shuffle()}
   end
-
-  def win_check(%Game{} = game) do
-  end
 end
