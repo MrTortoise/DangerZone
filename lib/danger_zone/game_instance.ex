@@ -3,15 +3,22 @@ defmodule DangerZone.GameInstance do
 
   alias DangerZone.{Game, Rules, Card, Player}
 
-  @timeout 15000
+  @timeout 60 * 60 * 24 * 1000
 
   def via_tuple(name), do: {:via, Registry, {Registry.DangerZone, name}}
+
+  def pid_from_name(name) do
+    name
+    |> via_tuple()
+    |> GenServer.whereis()
+  end
 
   def start_link(name) do
     GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
   def init(name) do
+    send(self(), {:set_state, name})
     {:ok, Game.new(name), @timeout}
   end
 
@@ -31,8 +38,29 @@ defmodule DangerZone.GameInstance do
     GenServer.call(game_instance, {:play_card, source_player_id, card_id, target_player_id})
   end
 
+  def stop_game(name) do
+    :ets.delete(:game_state, name)
+    Supervisor.terminate_child(__MODULE__, pid_from_name(name))
+  end
+
+  def terminate({:shutdown, :timeout}, state_data) do
+    :ets.delete(:game_state, state_data.name)
+    :ok
+  end
+  def terminate(_reason, _state), do: :ok
+
   def handle_info(:timeout, state) do
     {:stop, {:shutdown, :timeout}, state}
+  end
+
+  def handle_info({:set_state, name}, _state_data) do
+    state_data =
+    case :ets.lookup(:game_state, name) do
+      [] -> Game.new(name)
+      [{_key, state}] -> state
+    end
+    :ets.insert(:game_state, {name, state_data})
+    {:noreply, state_data, @timeout}
   end
 
   def handle_call({:add_player, player_name}, _from, game) do
@@ -114,10 +142,15 @@ defmodule DangerZone.GameInstance do
   end
 
   defp reply_success(game, result) do
+    :ets.insert(:game_state, {game.name, game})
     {:reply, result, game, @timeout}
   end
 
   defp reply_error(game, error) do
     {:reply, error, game, @timeout}
   end
+
+  # defp build_id() do
+  #   Integer.to_string(:rand.uniform(4294967296), 32) <> Integer.to_string(:rand.uniform(4294967296), 32)
+  # end
 end
